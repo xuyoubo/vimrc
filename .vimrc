@@ -1,131 +1,128 @@
+" don't bother with vi compatibility
 set nocompatible
-filetype off 
 
+" enable syntax highlighting
+syntax enable
+
+" configure Vundle
+filetype on " without this vim emits a zero exit status, later, because of :ft off
+filetype off
 set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
 
-Bundle 'gmarik/vundle'
-Bundle 'tpope/vim-fugitive'
-Bundle "tComment"
-Bundle "https://github.com/vim-scripts/SuperTab-continued..git"
-Bundle "UltiSnips"
-Bundle "delimitMate.vim"
-Bundle "https://github.com/bling/vim-airline.git"
-Bundle "Tabular"
-Bundle "https://github.com/michaeljsmith/vim-indent-object.git"
-Bundle "git://github.com/altercation/vim-colors-solarized.git"
-Bundle "repeat.vim"
-Bundle "The-NERD-tree"
-Bundle "cucumber.zip"
-Bundle "Indent-Guides"
-Bundle "vim-scripts/matchit.zip"
-Bundle "tpope/vim-surround"
-Bundle "vim-multiple-cursors"
-Bundle "ctrlp.vim"
-Bundle 'https://github.com/terryma/vim-expand-region.git'
-Bundle 'https://github.com/rking/ag.vim.git'
-Bundle 'Valloric/YouCompleteMe'
-Bundle 'https://github.com/tacahiroy/ctrlp-funky.git'
-Bundle 'https://github.com/majutsushi/tagbar'
+" install Vundle bundles
+if filereadable(expand("~/.vimrc.bundles"))
+  source ~/.vimrc.bundles
+  source ~/.vimrc.bundles.local
+endif
 
-filetype plugin indent on     " required!
-syntax on        "这一行设置语法高亮
-set nu           "显示行号
-set ts=2         "设置tab对其的字符数为4
-set shiftwidth=2 "自动缩进对其的字符数为4
-set tabstop=2
-"set fdm=syntax   "设置代码折叠模式
-set autoindent   	"开启自动缩进功能
-set clipboard+=unnamed
-set nobackup
-set noswapfile
-set backspace=start,indent,eol
-set hidden
-set noerrorbells
-set novisualbell
-set vb t_vb=
-set cindent
-set showmatch
-set magic
-set smartindent
-set guioptions=
-set nocompatible
-set encoding=utf-8
-set fileencodings=ucs-bom,utf-8,cp936
-set fileencoding=utf-8
-set termencoding=utf-8
-set ignorecase
-set hlsearch
-set incsearch
-set statusline=%F%m%r%h%w\ %l,%v
-set guifont=Monaco:h15
+" ensure ftdetect et al work by including this after the Vundle stuff
+filetype plugin indent on
+
 set cursorline
-set laststatus=2
-set mat=2
-set autoread
-set scrolloff=3
-set nowrap
+set hlsearch
+set autoindent
+set autoread                                                 " reload files when changed on disk, i.e. via `git checkout`
+set backspace=2                                              " Fix broken backspace in some setups
+set backupcopy=yes                                           " see :help crontab
+set clipboard=unnamed                                        " yank and paste with the system clipboard
+set directory-=.                                             " don't store swapfiles in the current directory
+set encoding=utf-8
+set expandtab                                                " expand tabs to spaces
+set ignorecase                                               " case-insensitive search
+set incsearch                                                " search as you type
+set laststatus=2                                             " always show statusline
+set list                                                     " show trailing whitespace
+set listchars=tab:▸\ ,trail:▫
+set number                                                   " show line numbers
+set ruler                                                    " show where you are
+set scrolloff=3                                              " show context above/below cursorline
+set shiftwidth=2                                             " normal mode indentation commands use 2 spaces
+set showcmd
+set smartcase                                                " case-sensitive search if any caps
+set softtabstop=2                                            " insert mode tab and backspace use 2 spaces
+set tabstop=8                                                " actual tabs occupy 8 characters
 set wildignore=log/**,node_modules/**,target/**,tmp/**,*.rbc
-set wildmenu
-set hid
-set report=0
-set background=dark
-" set transparency=7
-colorscheme solarized
-autocmd! bufwritepost .vimrc source %
-" set autochdir
-"set dictionary+=/usr/share/dict/words 
+set wildmenu                                                 " show a navigable menu for tab completion
+set wildmode=longest,list,full
+
+" Enable basic mouse behavior such as resizing buffers.
+set mouse=a
+if exists('$TMUX')  " Support resizing in tmux
+  set ttymouse=xterm2
+endif
 
 " keyboard shortcuts
 let mapleader = ','
-nnoremap // :TComment<CR>
-vnoremap // :TComment<CR>
-map <C-h> <C-w>h
-map <C-j> <C-w>j
-map <C-k> <C-w>k
-map <C-l> <C-w>l
-nmap <c-tab> :tabnext<CR>
-nmap <s-tab> :tabprevious<CR>
-map <leader>l :Align
-nmap <leader>a :Ack<space>
-nmap <leader>d :NERDTreeToggle<CR>
-nmap <leader>b :CtrlPBuffer<CR>
-nmap <leader>m :CtrlPMRUFiles<CR>
-nmap <leader>p :CtrlPFunky<CR>
-set whichwrap+=<,>,h,l
-map <F6> :Tlist<CR>
-map <F7> :NERDTreeFind<CR>
-map <F8> :NERDTreeToggle<CR>
-xnoremap p pgvy
-vmap <tab> >><esc>gv
-vmap <s-tab> <<<esc>gv
+noremap <C-h> <C-w>h
+noremap <C-j> <C-w>j
+noremap <C-k> <C-w>k
+noremap <C-l> <C-w>l
+noremap <leader>l :Align
+nnoremap <leader>a :Ag<space>
+nnoremap <leader>b :CtrlPBuffer<CR>
+nnoremap <leader>m :CtrlPMRUFiles<CR>
+nnoremap <leader>d :NERDTreeToggle<CR>
+nnoremap <leader>f :NERDTreeFind<CR>
+nnoremap <leader>t :CtrlP<CR>
+nnoremap <leader>T :CtrlPClearCache<CR>:CtrlP<CR>
+nnoremap <leader>] :TagbarToggle<CR>
+nnoremap <leader><space> :call whitespace#strip_trailing()<CR>
+nnoremap <leader>g :GitGutterToggle<CR>
+nnoremap <leader>c <Plug>Kwbd
+noremap <silent> <leader>V :source ~/.vimrc<CR>:filetype detect<CR>:exe ":echo 'vimrc reloaded'"<CR>
 
-let NERDTreeMouseMode=2
-let g:airline_detect_modified=1
-let g:airline_detect_paste=1
-let g:airline_detect_iminsert=1
-let g:airline_inactive_collapse=1
+" in case you forgot to sudo
+cnoremap w!! %!sudo tee > /dev/null %
 
-" 
-if !exists('g:airline_symbols')
-  let g:airline_symbols = {}
+" plugin settings
+let g:ctrlp_match_window = 'order:ttb,max:20'
+let g:NERDSpaceDelims=1
+let g:gitgutter_enabled = 0
+
+" Use The Silver Searcher https://github.com/ggreer/the_silver_searcher
+if executable('ag')
+  " Use Ag over Grep
+  set grepprg=ag\ --nogroup\ --nocolor
+
+  " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
+  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
 endif
-" 
-" unicode symbols
-let g:airline_left_sep = '»'
-let g:airline_left_sep = '▶'
-let g:airline_right_sep = '«'
-let g:airline_right_sep = '◀'
-let g:airline_symbols.linenr = '␊'
-let g:airline_symbols.linenr = '␤'
-let g:airline_symbols.linenr = '¶'
-let g:airline_symbols.branch = '⎇'
-let g:airline_symbols.paste = 'ρ'
-let g:airline_symbols.paste = 'Þ'
-let g:airline_symbols.paste = '∥'
-let g:airline_symbols.whitespace = 'Ξ'
 
-let g:ackprg = 'Ack '
+" fdoc is yaml
+autocmd BufRead,BufNewFile *.fdoc set filetype=yaml
+" md is markdown
+autocmd BufRead,BufNewFile *.md set filetype=markdown
+autocmd BufRead,BufNewFile *.md set spell
+" extra rails.vim help
+autocmd User Rails silent! Rnavcommand decorator      app/decorators            -glob=**/* -suffix=_decorator.rb
+autocmd User Rails silent! Rnavcommand observer       app/observers             -glob=**/* -suffix=_observer.rb
+autocmd User Rails silent! Rnavcommand feature        features                  -glob=**/* -suffix=.feature
+autocmd User Rails silent! Rnavcommand job            app/jobs                  -glob=**/* -suffix=_job.rb
+autocmd User Rails silent! Rnavcommand mediator       app/mediators             -glob=**/* -suffix=_mediator.rb
+autocmd User Rails silent! Rnavcommand stepdefinition features/step_definitions -glob=**/* -suffix=_steps.rb
+" automatically rebalance windows on vim resize
+autocmd VimResized * :wincmd =
 
-let g:indent_guides_guide_size=1
+" Fix Cursor in TMUX
+if exists('$TMUX')
+  let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
+  let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
+else
+  let &t_SI = "\<Esc>]50;CursorShape=1\x7"
+  let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+endif
 
+" Go crazy!
+if filereadable(expand("~/.vimrc.local"))
+  " In your .vimrc.local, you might like:
+  "
+  " set autowrite
+  " set nocursorline
+  " set nowritebackup
+  " set whichwrap+=<,>,h,l,[,] " Wrap arrow keys between lines
+  "
+  " autocmd! bufwritepost .vimrc source ~/.vimrc
+  " noremap! jj <ESC>
+  source ~/.vimrc.local
+endif
